@@ -1,33 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, createContext, useEffect } from 'react'
+import { DefaultTheme, ThemeProvider } from 'styled-components';
+import { useTheme } from './hooks/useTheme';
+import GlobalStyle from "./components/styles/GlobalStyle";
+import Terminal from './components/Terminal';
+
+export const themeContext = createContext<(({switchTheme : DefaultTheme}))>(null);
 
 function App() {
-  const [count, setCount] = useState(0)
+  //  themes
+  const { theme, themeLoaded, setMode } = useTheme();
+  const { selectedTheme, setSelectedTheme } = useState(theme);
 
+  // disable browser's default behaviour
+  // to prevent the page go up when up arrow is pressed
+  useEffect(()=> {
+    window.addEventListener(
+      "keydown", e => {
+        ["ArrowUp", "ArrowDown"].indexOf(e.code) > -1 && e.preventDefault();
+      },
+      false
+    )
+  }, []);
+
+  useEffect(() => {
+    setSelectedTheme(theme);
+  }, [themeLoaded]);
+
+  // update meta tag colors when switching themes
+  useEffect(() => {
+    const themeColor = theme.colors?.body;
+
+    
+  })
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      
     </>
   )
 }
