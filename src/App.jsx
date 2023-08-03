@@ -29,12 +29,33 @@ function App() {
   // update meta tag colors when switching themes
   useEffect(() => {
     const themeColor = theme.colors?.body;
+    const metaThemeColor = document.querySelector("meta[name='theme-color']");
+    const maskIcon = document.querySelector("link[rel='mask-icon']");
+    const metaMsTileColor = document.querySelector("meta[name='msapplication-TileColor']");
+
+    metaThemeColor && metaThemeColor.setAttribute("content", themeColor);
+    metaMsTileColor && metaMsTileColor.setAttribute("content", themeColor);
+    maskIcon && maskIcon.setAttribute("color", themeColor);
 
     
-  })
+  }, [selectedTheme]);
+
+  const themeSwitcher = (DefaultTheme) => {
+    setSelectedTheme(DefaultTheme);
+    setMode(DefaultTheme)
+  };
+
   return (
     <>
-      
+      <h1 className='sr-only' aria-label="Terminal Portfolio">Terminal Portfolio</h1> 
+      {themeLoaded && (
+        <ThemeProvider theme={selectedTheme}>
+          <GlobalStyle/>
+          <themeContext.Provider value={themeSwitcher}>
+            <Terminal/>
+          </themeContext.Provider>
+        </ThemeProvider>
+      )}
     </>
   )
 }
